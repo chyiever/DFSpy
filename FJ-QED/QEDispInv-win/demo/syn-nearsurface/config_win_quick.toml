@@ -1,0 +1,30 @@
+[secfunc]
+file_model = "model_data.txt"
+nc = 10000
+
+[forward]
+file_model = "model_data.txt"
+fmin = 1.0
+fmax = 60.0
+nf = 120
+
+[inversion]
+vs2model = "FixVpRho"
+model_ref = "mref.txt"
+
+vs_width = 0.7
+lambda = 1.0e-2
+reg_type = 2
+
+num_init = 1
+num_noise = 1
+rand_depth = false
+rand_vs = false
+zmax = 0.025
+
+r0 = 0.5
+rmin = 1.0
+rmax = 1.5
+
+weight = [4.0, 1.0, 1.0, 1.0]
+maxiter = 1

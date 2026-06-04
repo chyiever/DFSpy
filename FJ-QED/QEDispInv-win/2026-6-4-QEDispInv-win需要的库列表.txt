@@ -1,0 +1,71 @@
+QEDispInv-win 需要的库与工具清单
+生成日期: 2026-06-04
+
+一、Python 运行时核心依赖
+当前已验证可用的 Python 解释器主版本为 3.12。项目中的主程序、命令行入口、绘图脚本和 notebook 都默认按这个版本进行测试。
+
+1. numpy = 2.4.4
+   说明: 数组存储、向量化计算、ctypes 数组传递、npz 读写都依赖它。
+
+2. scipy = 1.17.1
+   说明: 主要用于 toms748 求根和 L-BFGS-B 反演优化。
+
+3. numba = 0.65.1
+   说明: 用于加速世俗函数与前向色散相关数值计算。
+
+4. matplotlib = 3.10.9
+   说明: 用于绘制色散曲线、模型剖面、核函数和反演结果图。
+
+5. pandas = 3.0.2
+   说明: 当前脚本中不是所有入口都强制依赖它，但数据整理和后续扩展分析建议保留。
+
+6. tomllib = Python 3.11+ 内置
+   说明: 用于读取 TOML 配置文件；如果未来切回 Python 3.10 或更早版本，需要改用第三方 tomli。
+
+二、notebook 执行与交互相关依赖
+当前 notebook 执行命令使用的是系统现有 Jupyter 工具链。为确保 QEDispInv-win-test.ipynb 能够稳定执行，建议以下组件可用。
+
+1. IPython = 8.23.0
+   说明: 提供交互式执行环境。
+
+2. ipykernel = 6.29.4
+   说明: notebook 内核必须组件。
+
+3. jupyter_client = 8.6.1
+   说明: notebook 客户端通信组件。
+
+4. jupyter_core = 5.7.2
+   说明: Jupyter 核心配置组件。
+
+补充说明:
+当前系统中的 `jupyter nbconvert` 命令可以正常执行，但 `jupyter --version` 输出里 `nbconvert`、`nbformat`、`notebook`、`nbclient` 没有显示为独立包版本。因此，在新环境部署时，建议显式安装 `jupyter` 或至少安装 `nbconvert + nbformat + nbclient + ipykernel`，避免环境差异导致 notebook 无法批量执行。
+
+三、Fortran 核函数编译与运行时依赖
+如果只运行已经编好的 `build/cpskernels.dll`，理论上不一定要本地重新安装编译器；但只要需要重编译，下面这些工具就必不可少。
+
+1. gfortran
+   说明: 用于把 `ref/QEDispInv-main/fortran/sregn96.f90` 和 `slegn96.f90` 编译为 Windows DLL。
+   当前已验证路径: D:\anaconda3\envs\LZdataread39\Library\mingw-w64\bin\gfortran.exe
+
+2. MinGW-w64 Fortran 运行时 DLL
+   说明: `cpskernels.dll` 被 Python 加载时，通常仍需要 `libgfortran`、`libgcc_s` 等运行时动态库。
+   当前已验证目录: D:\anaconda3\envs\LZdataread39\Library\mingw-w64\bin
+
+3. cpskernels.dll
+   说明: 这是项目最终直接调用的 Fortran 动态库，默认路径为 `QEDispInv-win/build/cpskernels.dll`。
+
+4. cpskernels.runtime.json
+   说明: 由 `python/build_cpskernels.py` 自动生成，用于记录编译时使用的 gfortran 路径和运行时目录，程序启动时会优先读取它来恢复 DLL 依赖搜索路径。
+
+四、可选但建议保留的系统能力
+1. PowerShell
+   说明: 当前项目中的命令行示例与测试流程都按 Windows PowerShell 编写。
+
+2. Git
+   说明: 用于版本管理和上传 GitHub。
+
+3. UTF-8 文本编辑器
+   说明: 所有 `.py`、`.md`、`.ipynb` 文件都要求以 UTF-8 保存，避免再次出现中文问号和乱码问题。
+
+五、建议安装方式
+如果是新机器部署，建议先准备一个独立的 Conda 环境，再安装 Python 包和 gfortran。对于只需要运行现成程序而不重新编译 Fortran 核的人，可以不安装 gfortran，但仍需保证 `cpskernels.dll` 及其运行时依赖可被找到。对于需要继续开发、重编译或迁移 DLL 的人，建议同时保留构建脚本 `python/build_cpskernels.py` 与 `build/cpskernels.runtime.json`，这样最容易复现当前环境。

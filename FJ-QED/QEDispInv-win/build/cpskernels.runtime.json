@@ -1,0 +1,8 @@
+{
+  "dll_path": "E:\\codes\\DFSpy\\FJ-QED\\QEDispInv-win\\build\\cpskernels.dll",
+  "gfortran": "D:\\anaconda3\\envs\\LZdataread39\\Library\\mingw-w64\\bin\\gfortran.exe",
+  "runtime_dirs": [
+    "D:\\anaconda3\\envs\\LZdataread39\\Library\\mingw-w64\\bin",
+    "D:\\anaconda3\\envs\\LZdataread39\\Library\\mingw-w64\\bin"
+  ]
+}
